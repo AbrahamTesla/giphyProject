@@ -1,0 +1,18 @@
+h1{
+    text-align: Center;
+    font-size: 50px;
+}
+label{
+    padding-bottom:10px;
+    padding-top: 100px;
+}
+input{
+    padding:2px;
+}
+
+button{
+    background-color: lightgreen;
+    padding:10px;
+    border-radius:30%;
+    margin-bottom: 10px;
+}

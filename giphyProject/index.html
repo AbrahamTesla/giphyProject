@@ -1,0 +1,118 @@
+<!Doctype Html>
+<html>
+    <head lang="en">
+        <meta charset="utf-8">
+        <title>Giphy Project</title>
+        <link rel="stylesheet" href="style.css">
+    
+    </head>
+    <body>
+    <header> <h1>Giphy Search</h1></header>
+    
+    <section id="collectionButton"></section> 
+    
+        
+    <form>
+        <label>Please type in your search:</label><br>
+        <input class="inputText" type="text">
+        <br>
+        
+        <input id="addButton" type="submit">
+        
+    </form>
+    
+   <div class="collectionGiphy"></div>   
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <script>
+
+  $( document ).ready(function() {
+    
+       
+     
+ $("#addButton").on("click", function(event){
+            event.preventDefault();
+            
+            var buttonName =$(".inputText").val().trim();
+            var newButton=$("<button data-value='"+buttonName+"'>");
+            
+            
+            newButton.addClass("newButton");
+            newButton.append(buttonName);
+            
+            var collectionButton = $("#collectionButton");
+            collectionButton.append(newButton);
+            
+            $(".inputText").val("");
+  
+        });
+            
+        $(document).on("click",".newButton",function() {
+            var press=$(this).attr("data-value");
+            displayGifs(press);
+            console.log(press);
+            
+        });
+        
+function displayGifs(keyword){
+    
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + keyword + "&api_key=NseLriKV7yu8CiRFHqIfP8hW1Y9hfsEk&limit=10";
+    console.log(queryURL); 
+    console.log(keyword);
+    
+    $.ajax({
+        url: queryURL,
+        method: 'GET'
+    })
+    .then(function(response) {
+        console.log(response); 
+        $(".collectionGiphy").empty(); 
+        var results = response.data; 
+        if (results == ""){  
+            $(".collectionGiphy").empty(); 
+            $(".collectionGiphy").append("<BR> none exists");
+        }
+        for (var i=0; i<results.length; i++){
+
+            var gifDiv = $("<div>"); 
+            gifDiv.addClass("displayImg");
+            // pulling rating of gif
+            var gifRating = $("<p>").text("Rating: " + results[i].rating);
+            gifDiv.append(gifRating);
+            // pulling gif
+            var gifImage = $("<img>");
+            gifImage.attr("src", results[i].images.fixed_height_small_still.url); 
+            gifImage.attr("data-still",results[i].images.fixed_height_small_still.url); 
+            gifImage.attr("data-animate",results[i].images.fixed_height_small.url); 
+            gifImage.attr("data-state", "still"); 
+            gifImage.addClass("image");
+            gifDiv.append(gifImage);
+            
+            $(".collectionGiphy").prepend(gifDiv);
+        }
+    });
+};
+
+
+$(document).on("click", ".image", function(){
+    var state = $(this).attr('data-state');
+    if ( state == 'still'){
+        $(this).attr('src', $(this).data('animate'));
+        $(this).attr('data-state', 'animate');
+    }else{
+        $(this).attr('src', $(this).data('still'));
+        $(this).attr('data-state', 'still');
+    }
+});
+
+});   
+   
+        
+        </script>
+    
+    </body>
+
+
+
+</html>
